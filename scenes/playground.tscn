@@ -1,0 +1,249 @@
+[gd_scene load_steps=8 format=3 uid="uid://dg8fwjls1rdfg"]
+
+[ext_resource type="PackedScene" uid="uid://cymhp6t2rnst5" path="res://scenes/tile_map.tscn" id="1_lhd2v"]
+[ext_resource type="PackedScene" uid="uid://dwc2q02a7xudx" path="res://scenes/knight.tscn" id="2_t7lvn"]
+[ext_resource type="PackedScene" uid="uid://cro8j88wfv6b5" path="res://scenes/fruit.tscn" id="4_xordu"]
+[ext_resource type="PackedScene" uid="uid://dx7yl2xt6ntes" path="res://scenes/score_canvas.tscn" id="6_2a6tb"]
+[ext_resource type="PackedScene" uid="uid://bnvbx4o0584pi" path="res://scenes/kill_zone.tscn" id="7_eyofm"]
+
+[sub_resource type="GDScript" id="GDScript_iuecp"]
+script/source = "extends AIController2D
+
+var move = Vector2.ZERO
+var jump = false
+
+@onready var knight = $\"..\"
+@onready var fruit = $\"../../Fruit\"
+@onready var ray_cast_2d = $\"../RayCast2D\"
+@onready var ray_cast_2d_2 = $\"../RayCast2D2\"
+@onready var ray_cast_2d_3 = $\"../RayCast2D3\"
+@onready var ray_cast_2d_4 = $\"../RayCast2D4\"
+@onready var ray_cast_2d_5 = $\"../RayCast2D5\"
+@onready var ray_cast_2d_6 = $\"../RayCast2D6\"
+@onready var ray_cast_2d_7 = $\"../RayCast2D7\"
+@onready var ray_cast_2d_8 = $\"../RayCast2D8\"
+@onready var ray_cast_2d_9 = $\"../RayCast2D9\"
+@onready var ray_cast_2d_10 = $\"../RayCast2D10\"
+@onready var ray_cast_2d_11 = $\"../RayCast2D11\"
+@onready var ray_cast_2d_12 = $\"../RayCast2D12\"
+@onready var ray_cast_2d_13 = $\"../RayCast2D13\"
+@onready var ray_cast_2d_14 = $\"../RayCast2D14\"
+@onready var ray_cast_2d_15 = $\"../RayCast2D15\"
+@onready var ray_cast_2d_16 = $\"../RayCast2D16\"
+@onready var ray_cast_2d_17 = $\"../RayCast2D17\"
+@onready var ray_cast_2d_18 = $\"../RayCast2D18\"
+@onready var ray_cast_2d_19 = $\"../RayCast2D19\"
+@onready var ray_cast_2d_20 = $\"../RayCast2D20\"
+@onready var ray_cast_2d_21 = $\"../RayCast2D21\"
+@onready var ray_cast_2d_22 = $\"../RayCast2D22\"
+@onready var ray_cast_2d_23 = $\"../RayCast2D23\"
+@onready var ray_cast_2d_24 = $\"../RayCast2D24\"
+
+
+func get_reward() -> float:
+	reward -= 0.01  # Small time penalty
+	
+	return reward
+
+func get_obs() -> Dictionary:
+	var obs := [
+		calculate_distance_to_fruit(),
+		ray_collision_dist(ray_cast_2d),
+		ray_collision_dist(ray_cast_2d_2),
+		ray_collision_dist(ray_cast_2d_3),
+		ray_collision_dist(ray_cast_2d_4),
+		ray_collision_dist(ray_cast_2d_5),
+		ray_collision_dist(ray_cast_2d_6),
+		ray_collision_dist(ray_cast_2d_7),
+		ray_collision_dist(ray_cast_2d_8),
+		ray_collision_dist(ray_cast_2d_9),
+		ray_collision_dist(ray_cast_2d_10),
+		ray_collision_dist(ray_cast_2d_11),
+		ray_collision_dist(ray_cast_2d_12),
+		ray_collision_dist(ray_cast_2d_13),
+		ray_collision_dist(ray_cast_2d_14),
+		ray_collision_dist(ray_cast_2d_15),
+		ray_collision_dist(ray_cast_2d_16),
+		ray_collision_dist(ray_cast_2d_17),
+		ray_collision_dist(ray_cast_2d_18),
+		ray_collision_dist(ray_cast_2d_19),
+		ray_collision_dist(ray_cast_2d_20),
+		ray_collision_dist(ray_cast_2d_21),
+		ray_collision_dist(ray_cast_2d_22),
+		ray_collision_dist(ray_cast_2d_23),
+		ray_collision_dist(ray_cast_2d_24),
+	]
+
+	return {\"obs\": obs}
+
+# Calculates the distance of the ray cast (object to knight)
+func ray_collision_dist(body) -> float:
+	return body.get_collision_point().distance_to(
+		knight.position)
+
+func calculate_distance_to_fruit() -> float:
+	return fruit.position.distance_to(
+		knight.position)
+
+func get_action_space() -> Dictionary:
+	return {
+		\"move\": {
+			\"size\": 2,
+			\"action_type\": \"continuous\"
+		},
+		\"jump\": {
+			\"size\": 1,
+			\"action_type\": \"discrete\"
+		},
+	}
+
+func set_action(action) -> void:
+	move.x = action[\"move\"][0]
+	move.y = action[\"move\"][1]
+	jump = action[\"jump\"] > 0
+
+
+func _on_fruit_body_entered(_body):
+	reward += 50
+	fruit.randomize_position()
+
+func _on_kill_zone_body_entered(_body):
+	reward -= (100 + calculate_distance_to_fruit() * 0.1)
+	reset()
+"
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_1pgee"]
+distance = -17.0
+
+[node name="playground" type="Node2D"]
+
+[node name="TileMap" parent="." instance=ExtResource("1_lhd2v")]
+layer_0/tile_data = PackedInt32Array(-131081, 0, 11, -65545, 0, 11, -9, 0, 11, 65527, 0, 11, 131063, 0, 11, 196599, 0, 11, 262135, 0, 11, 327671, 0, 11, -131080, 0, 11, -65544, 0, 11, -8, 0, 11, 65528, 0, 11, 131064, 0, 11, 196600, 0, 11, 262136, 0, 11, 327672, 0, 11, -131079, 0, 11, -65543, 0, 11, -7, 0, 11, 65529, 0, 11, 131065, 0, 11, 196601, 0, 11, 262137, 0, 11, 327673, 0, 11, -131078, 0, 11, -65542, 0, 11, -6, 0, 11, 65530, 0, 11, 131066, 0, 11, 196602, 0, 11, 262138, 0, 11, 327674, 0, 11, -131077, 0, 11, -65541, 0, 11, -5, 0, 11, 65531, 0, 11, 131067, 0, 11, 196603, 0, 11, 262139, 0, 11, 327675, 0, 11, -131076, 0, 11, -65540, 0, 11, -4, 0, 11, 65532, 0, 11, 131068, 0, 11, 196604, 0, 11, 262140, 0, 11, 327676, 0, 11, -131075, 0, 11, -65539, 0, 11, -3, 0, 11, 65533, 0, 11, 131069, 0, 11, 196605, 0, 11, 262141, 0, 11, 327677, 0, 11, -131074, 0, 11, -65538, 0, 11, -2, 0, 11, 65534, 0, 11, 131070, 0, 11, 196606, 0, 11, 262142, 0, 11, 327678, 0, 11, -131073, 0, 11, -65537, 0, 11, -1, 0, 11, 65535, 0, 11, 131071, 0, 11, 196607, 0, 11, 262143, 0, 11, 327679, 0, 11, -196608, 0, 11, -131072, 0, 11, -65536, 0, 11, 0, 0, 11, 65536, 0, 11, 131072, 0, 11, 196608, 0, 11, 262144, 0, 11, -196607, 0, 11, -131071, 0, 11, -65535, 0, 11, 1, 0, 11, 65537, 0, 11, 131073, 0, 11, 196609, 0, 11, 262145, 0, 11, -196606, 0, 11, -131070, 0, 11, -65534, 0, 11, 2, 0, 11, 65538, 0, 11, 131074, 0, 11, 196610, 0, 11, 262146, 0, 11, -196605, 0, 11, -131069, 0, 11, -65533, 0, 11, 3, 0, 11, 65539, 0, 11, 131075, 0, 11, 196611, 0, 11, 262147, 0, 11, -196604, 0, 11, -131068, 0, 11, -65532, 0, 11, 4, 0, 11, 65540, 0, 11, 131076, 0, 11, 196612, 0, 11, 262148, 0, 11, -196603, 0, 11, -131067, 0, 11, -65531, 0, 11, 5, 0, 11, 65541, 0, 11, 131077, 0, 11, 196613, 0, 11, 262149, 0, 11, 393207, 393216, 10, 393208, 393216, 10, 393209, 393216, 10, 393210, 393216, 10, 393211, 393216, 10, 393212, 393216, 10, 393213, 393216, 10, 393214, 393216, 10, 393215, 393216, 10, 327680, 393216, 10, 327681, 393216, 10, 327682, 393216, 10, 327683, 393216, 10, 327684, 393216, 10, 327685, 393216, 10, -65530, 0, 11, 6, 0, 11, 65542, 0, 11, 131078, 0, 11, 196614, 0, 11, 262150, 0, 11, 327686, 393216, 10, -65529, 0, 11, 7, 0, 11, 65543, 0, 11, 131079, 0, 11, 196615, 0, 11, 262151, 0, 11, 327687, 393216, 10, -65528, 0, 11, 8, 0, 11, 65544, 0, 11, 131080, 0, 11, 196616, 0, 11, 262152, 0, 11, 327688, 393216, 10, -65527, 0, 11, 9, 0, 11, 65545, 0, 11, 131081, 0, 11, 196617, 0, 11, 262153, 0, 11, 327689, 393216, 10, -262153, 0, 11, -196617, 0, 11, -262152, 0, 11, -196616, 0, 11, -262151, 0, 11, -196615, 0, 11, -262150, 0, 11, -196614, 0, 11, -262149, 0, 11, -196613, 0, 11, -262148, 0, 11, -196612, 0, 11, -262147, 0, 11, -196611, 0, 11, -262146, 0, 11, -196610, 0, 11, -262145, 0, 11, -196609, 0, 11, -327680, 0, 11, -262144, 0, 11, -327679, 0, 11, -262143, 0, 11, -327678, 0, 11, -262142, 0, 11, -327677, 0, 11, -262141, 0, 11, -327676, 0, 11, -262140, 0, 11, -327675, 0, 11, -262139, 0, 11, -327674, 0, 11, -262138, 0, 11, -196602, 0, 11, -131066, 0, 11, -327673, 0, 11, -262137, 0, 11, -196601, 0, 11, -131065, 0, 11, -327672, 0, 11, -262136, 0, 11, -196600, 0, 11, -131064, 0, 11, -327671, 0, 11, -262135, 0, 11, -196599, 0, 11, -131063, 0, 11)
+layer_1/tile_data = PackedInt32Array(327671, 458752, 9, 393207, 393216, 9, 458743, 393216, 10, 327672, 458752, 9, 393208, 393216, 9, 458744, 393216, 10, 327673, 458752, 9, 393209, 393216, 9, 458745, 393216, 10, 327674, 458752, 9, 393210, 393216, 9, 458746, 393216, 10, 327675, 458752, 9, 393211, 393216, 9, 458747, 393216, 10, 327676, 458752, 9, 393212, 393216, 9, 458748, 393216, 10, 327677, 458752, 9, 393213, 393216, 9, 458749, 393216, 10, 327678, 458752, 9, 393214, 393216, 9, 458750, 393216, 10, 327679, 458752, 9, 393215, 393216, 9, 458751, 393216, 10, 262144, 458752, 9, 327680, 393216, 9, 393216, 393216, 10, 262145, 458752, 9, 327681, 393216, 9, 393217, 393216, 10, 262146, 458752, 9, 327682, 393216, 9, 393218, 393216, 10, 262147, 458752, 9, 327683, 393216, 9, 393219, 393216, 10, 262148, 458752, 9, 327684, 393216, 9, 393220, 393216, 10, 262149, 458752, 9, 327685, 393216, 9, 393221, 393216, 10, 524279, 393216, 10, 524280, 393216, 10, 524281, 393216, 10, 524282, 393216, 10, 524283, 393216, 10, 524284, 393216, 10, 524285, 393216, 10, 524286, 393216, 10, 524287, 393216, 10, 458752, 393216, 10, 458753, 393216, 10, 458754, 393216, 10, 458755, 393216, 10, 458756, 393216, 10, 458757, 393216, 10, 262150, 458752, 9, 327686, 393216, 9, 393222, 393216, 10, 458758, 393216, 10, 262151, 458752, 9, 327687, 393216, 9, 393223, 393216, 10, 458759, 393216, 10, 262152, 458752, 9, 327688, 393216, 9, 393224, 393216, 10, 458760, 393216, 10, 262153, 458752, 9, 327689, 393216, 9, 393225, 393216, 10, 458761, 393216, 10)
+layer_2/tile_data = PackedInt32Array(327672, 65536, 1, 327674, 65536, 0, 196604, 0, 5, 327677, 65536, 1, 327678, 65536, 1, 327675, 65536, 1, 262145, 65536, 0, 262147, 0, 1, 262148, 65536, 0, 262151, 0, 1, 196602, 65536, 5, 131068, 0, 3, 262152, 65536, 1, 262149, 65536, 1, 262153, 0, 1, 196617, 0, 1, 131081, 0, 0, 262144, 65536, 0, -65536, 131072, 4, 65536, 196608, 7, 131072, 196608, 8, 196599, 0, 0, -9, 524288, 0, -65545, 524288, 0, -131081, 524288, 0, -196617, 524288, 0, -262153, 524288, 0, -262152, 524288, 0, -262151, 524288, 0, -262150, 524288, 0, -262149, 524288, 0, -262148, 524288, 0, -262147, 524288, 0, -262146, 524288, 0, -262145, 524288, 0, -327680, 524288, 0, -327679, 524288, 0, -327678, 524288, 0, -327677, 524288, 0, -327676, 524288, 0, -327675, 524288, 0, -327674, 524288, 0, -327673, 524288, 0, -327672, 524288, 0, -327671, 524288, 0, -262135, 524288, 0, -196599, 524288, 0, -131063, 524288, 0, -65527, 524288, 0, 9, 524288, 0, 65545, 524288, 0, 262135, 65536, 0, 327671, 65536, 1, 327676, 0, 1, 327679, 0, 1, 262146, 0, 1, 262136, 0, 0, 262138, 0, 0, 262139, 0, 0, 262140, 0, 0, 262141, 0, 0, 262142, 0, 0, 262143, 0, 0, 196608, 0, 0, 196609, 0, 0, 196610, 0, 0, 196611, 0, 0, 196612, 0, 0, 196613, 0, 0, 196615, 0, 0, 196616, 0, 0)
+
+[node name="Knight" parent="." instance=ExtResource("2_t7lvn")]
+position = Vector2(118, 56)
+
+[node name="AIController2D" type="Node2D" parent="Knight"]
+position = Vector2(107, -72)
+script = SubResource("GDScript_iuecp")
+
+[node name="RayCast2D" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(79, 156)
+
+[node name="RayCast2D2" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(41, 164)
+
+[node name="RayCast2D3" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(115, 141)
+
+[node name="RayCast2D4" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(169, 99)
+
+[node name="RayCast2D5" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(186, 65)
+
+[node name="RayCast2D6" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(194, 33)
+
+[node name="RayCast2D7" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-41, 161)
+
+[node name="RayCast2D8" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-83, 150)
+
+[node name="RayCast2D9" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-117, 133)
+
+[node name="RayCast2D10" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-167, 79)
+
+[node name="RayCast2D11" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-179, 51)
+
+[node name="RayCast2D12" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-188, 26)
+
+[node name="RayCast2D13" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(203, 0)
+
+[node name="RayCast2D14" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(1, -179)
+
+[node name="RayCast2D15" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(0, 166)
+
+[node name="RayCast2D16" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(147, 125)
+
+[node name="RayCast2D17" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-191, 0)
+
+[node name="RayCast2D18" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-148, 112)
+
+[node name="RayCast2D19" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(161, -142)
+
+[node name="RayCast2D20" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-164, -129)
+
+[node name="RayCast2D21" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(83, -156)
+
+[node name="RayCast2D22" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(200, -71)
+
+[node name="RayCast2D23" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-185, -55)
+
+[node name="RayCast2D24" type="RayCast2D" parent="Knight"]
+position = Vector2(0, -6)
+target_position = Vector2(-81, -154)
+
+[node name="Fruit" parent="." instance=ExtResource("4_xordu")]
+position = Vector2(70, 30)
+
+[node name="KillZone" parent="." instance=ExtResource("7_eyofm")]
+position = Vector2(-148, 118)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillZone"]
+position = Vector2(0, -22)
+shape = SubResource("WorldBoundaryShape2D_1pgee")
+
+[node name="ScoreCanvas" parent="." instance=ExtResource("6_2a6tb")]
+unique_name_in_owner = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(3, 32)
+zoom = Vector2(3, 3)
+limit_bottom = 230
+limit_smoothed = true
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true
+
+[connection signal="body_entered" from="Fruit" to="Knight/AIController2D" method="_on_target_body_entered"]

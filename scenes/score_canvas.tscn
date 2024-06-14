@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dx7yl2xt6ntes"]
+
+[ext_resource type="FontFile" uid="uid://dcsbigvbwhoqc" path="res://assets/fonts/PixelOperator8.ttf" id="1_safgl"]
+[ext_resource type="Script" path="res://scripts/score_canvas.gd" id="1_tpowx"]
+
+[node name="ScoreCanvas" type="CanvasLayer"]
+script = ExtResource("1_tpowx")
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = 26.0
+offset_top = 20.0
+offset_right = 138.0
+offset_bottom = 43.0
+theme_override_colors/font_color = Color(0.872249, 0.695985, 0.0573313, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_safgl")
+theme_override_font_sizes/font_size = 32
+text = "Coins: $0"
