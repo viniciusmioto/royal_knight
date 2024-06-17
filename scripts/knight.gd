@@ -8,19 +8,6 @@ const SPEED = 130
 const JUMP_VELOCITY = -300.0
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-
-
-# Define the predefined positions
-var predefined_positions = [
-	Vector2(-26, 56),
-	Vector2(-10, 56),
-	Vector2(38, 72),
-	Vector2(118, 56),
-]
-
-func randomize_position():
-	var index = randi() % predefined_positions.size()
-	position = predefined_positions[index]
 	
 	
 func _ready():
@@ -36,7 +23,6 @@ func _on_game_started():
 func _on_knight_fall():
 	set_process_input(false)
 	
-
 
 func _physics_process(delta):
 	# Add the gravity.

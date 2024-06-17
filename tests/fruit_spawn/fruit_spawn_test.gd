@@ -21,6 +21,7 @@ func _on_knight_fall():
 	
 func _on_fruit_collected():
 	score += 1
+	print('fruit position: ', fruit.position)
 	
 	
 func _process(_delta: float) -> void:

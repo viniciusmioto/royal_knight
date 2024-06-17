@@ -87,7 +87,7 @@ class CatchFruits(Agent):
         return 0
 
     def terminated(self):
-        terminated = self.dead != 0 or self.score >= 2
+        terminated = self.dead != 0 or self.score >= 1
         if terminated:
             self.points = 0
         return terminated
