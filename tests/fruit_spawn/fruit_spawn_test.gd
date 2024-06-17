@@ -5,31 +5,29 @@ extends FeatureNode
 
 var dead = false
 var score : int = 0
-var fruit_X
-var fruit_Y
-var knight_X
-var knight_Y
+var x_dist
+var y_dist
 
 
 func _ready():
 	GameManager.knight_fall.connect(_on_knight_fall)
 	GameManager.fruit_collected.connect(_on_fruit_collected)
 	GameManager.game_started.emit()   
-	
+
 func _on_knight_fall():
 	dead = true
-	
+
 func _on_fruit_collected():
 	score += 1
 	print('fruit position: ', fruit.position)
-	
-	
+
+func dist(x, y):
+	return x - y
+
 func _process(_delta: float) -> void:
-	fruit_X = fruit.position.x
-	fruit_Y = fruit.position.y
-	knight_X = knight.position.x
-	knight_Y = knight.position.y
-	
+	x_dist = dist(knight.position.x, fruit.position.x)
+	y_dist = dist(knight.position.y, fruit.position.y)
+
 func set_fruit_position(i, j):
 	fruit.position.x = i
 	fruit.position.y = j

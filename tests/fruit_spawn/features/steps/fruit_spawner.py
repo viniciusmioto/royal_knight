@@ -32,33 +32,15 @@ class CatchFruits(Agent):
         super().__init__(
             observation_space=spaces.Dict(
                 {
-                    "fruit_X": spaces.Box(
-                        low=np.iinfo(np.int32).min,
-                        high=np.iinfo(np.int32).max,
-                        shape=(1,),
-                        dtype=np.int32,
+                    "x_dist": spaces.Box(
+                        -float("inf"), float("inf"), shape=(1,), dtype=float
                     ),
-                    "fruit_Y": spaces.Box(
-                        low=np.iinfo(np.int32).min,
-                        high=np.iinfo(np.int32).max,
-                        shape=(1,),
-                        dtype=np.int32,
-                    ),
-                    "knight_X": spaces.Box(
-                        low=np.iinfo(np.int32).min,
-                        high=np.iinfo(np.int32).max,
-                        shape=(1,),
-                        dtype=np.int32,
-                    ),
-                    "knight_Y": spaces.Box(
-                        low=np.iinfo(np.int32).min,
-                        high=np.iinfo(np.int32).max,
-                        shape=(1,),
-                        dtype=np.int32,
+                    "y_dist": spaces.Box(
+                        -float("inf"), float("inf"), shape=(1,), dtype=float
                     ),
                 }
             ),
-            action_space=spaces.Discrete(4),
+            action_space=spaces.MultiDiscrete([3, 2]),
             max_episode_length=1000,
             total_timesteps=int(3_000_000),
             algorithm_type="MultiInputPolicy",
@@ -71,10 +53,8 @@ class CatchFruits(Agent):
 
     def observation(self):
         return {
-            "fruit_X": np.array(self.fruit_X),
-            "fruit_Y": np.array(self.fruit_Y),
-            "knight_X": np.array(self.knight_X),
-            "knight_Y": np.array(self.knight_Y),
+            "x_dist": np.array([self.x_dist], dtype=np.int32),
+            "y_dist": np.array([self.y_dist], dtype=np.int32),
         }
 
     def reward(self):

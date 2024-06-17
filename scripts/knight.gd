@@ -8,6 +8,8 @@ const SPEED = 130
 const JUMP_VELOCITY = -300.0
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var knight_X = self.position.x
+var knight_Y = self.position.y
 	
 	
 func _ready():
