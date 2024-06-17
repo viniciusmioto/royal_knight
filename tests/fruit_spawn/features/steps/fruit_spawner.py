@@ -10,9 +10,10 @@ def config(context):
     context.driver.set_scene("res://tests/fruit_spawn/fruit_spawn_test.tscn")
 
 
-@given("first fruit at ({i:d}, {j:d})")
-def step_impl(context, i,j):
-    context.driver.set_pipes_position(i, j)
+@given("first fruit at {i:d} {j:d}")
+def step_impl(context, i, j):
+    context.driver.set_fruit_position(i, j)
+    pass
 
 
 @when("knight moves")
@@ -20,19 +21,43 @@ def step_impl(context):
     return CatchFruits()
 
 
-@then("knight should have collected {i:d} fruits")
-def step_impl(context, i):
-    context.assert_true(context.score >= i)
+@then("knight should have collected {k:d} fruit")
+def step_impl(context, k):
+    context.assert_true(context.score >= k)
 
 
 class CatchFruits(Agent):
 
     def __init__(self):
         super().__init__(
-            observation_space=spaces.Dict({
-                "fruit_X": spaces.Box(-int('inf'), int('inf'), shape=(1,), dtype=int),
-                "fruit_Y": spaces.Box(-int('inf'), int('inf'), shape=(1,), dtype=int),
-            }),
+            observation_space=spaces.Dict(
+                {
+                    "fruit_X": spaces.Box(
+                        low=np.iinfo(np.int32).min,
+                        high=np.iinfo(np.int32).max,
+                        shape=(1,),
+                        dtype=np.int32,
+                    ),
+                    "fruit_Y": spaces.Box(
+                        low=np.iinfo(np.int32).min,
+                        high=np.iinfo(np.int32).max,
+                        shape=(1,),
+                        dtype=np.int32,
+                    ),
+                    "knight_X": spaces.Box(
+                        low=np.iinfo(np.int32).min,
+                        high=np.iinfo(np.int32).max,
+                        shape=(1,),
+                        dtype=np.int32,
+                    ),
+                    "knight_Y": spaces.Box(
+                        low=np.iinfo(np.int32).min,
+                        high=np.iinfo(np.int32).max,
+                        shape=(1,),
+                        dtype=np.int32,
+                    ),
+                }
+            ),
             action_space=spaces.Discrete(4),
             max_episode_length=1000,
             total_timesteps=int(3_000_000),
@@ -40,12 +65,17 @@ class CatchFruits(Agent):
             algorithm=stable_baselines3.PPO,
             save_path="./models/knight",
             eval_freq=10000,
-            )
+        )
 
         self.points = 0
 
     def observation(self):
-        return {"fruit_X": np.array(self.fruit_X), "fruit_Y": np.array(self.fruit_Y)}
+        return {
+            "fruit_X": np.array(self.fruit_X),
+            "fruit_Y": np.array(self.fruit_Y),
+            "knight_X": np.array(self.knight_X),
+            "knight_Y": np.array(self.knight_Y),
+        }
 
     def reward(self):
         if self.score > self.points:
@@ -57,7 +87,7 @@ class CatchFruits(Agent):
         return 0
 
     def terminated(self):
-        terminated = self.dead != 0 or self.score >= 2 or self.Game.Bird.position[1] < 0
+        terminated = self.dead != 0 or self.score >= 2
         if terminated:
             self.points = 0
         return terminated

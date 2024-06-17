@@ -29,7 +29,6 @@ func _ready():
 
 	
 func _on_game_started():
-	$AnimationPlayer.play("flap_wings")
 	set_physics_process(true)
 	set_process_input(true)
 
