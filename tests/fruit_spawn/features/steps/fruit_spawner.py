@@ -49,27 +49,27 @@ class CatchFruits(Agent):
             eval_freq=10000,
         )
 
-        self.points = 0
+        self._points = 0
 
     def observation(self):
         return {
-            "x_dist": np.array([self.x_dist], dtype=np.int32),
-            "y_dist": np.array([self.y_dist], dtype=np.int32),
+            "x_dist": np.array([self.context.x_dist], dtype=np.int32),
+            "y_dist": np.array([self.context.y_dist], dtype=np.int32),
         }
 
     def reward(self):
-        if self.score > self.points:
-            self.points = self.score
+        if self.context.score > self._points:
+            self._points = self.context.score
             return 1
 
-        if self.dead:
+        if self.context.dead:
             return -1
         return 0
 
     def terminated(self):
-        terminated = self.dead != 0 or self.score >= 1
+        terminated = self.context.dead != 0 or self.context.score >= 1
         if terminated:
-            self.points = 0
+            self._points = 0
         return terminated
 
     def actions(self, raw_actions):
