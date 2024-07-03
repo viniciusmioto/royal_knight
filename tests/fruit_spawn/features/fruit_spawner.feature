@@ -14,10 +14,10 @@ Feature: Testing Fruit Spawner
         | -90 |  6  | 1 |
         |  12 |  37 | 1 |
         |  70 |  30 | 1 |
-
+    
     @manual
-    Scenario: Testing spawn positions of the Fruit manually
+    Scenario: Manual Testing spawn positions of the Fruit
         Given first fruit at 53 48
         When knight moves
         Then knight should have collected 1 fruit
-    
+
