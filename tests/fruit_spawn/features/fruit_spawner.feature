@@ -1,7 +1,7 @@
 Feature: Testing Fruit Spawner
 
 
-    @easy
+    @easy @smoke
     Scenario Outline: Testing spawn positions of the Fruit
         Given first fruit at <i> <j>
         When knight moves

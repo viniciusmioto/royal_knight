@@ -1,7 +1,7 @@
 import numpy as np
 import stable_baselines3
 from gymnasium import spaces
-from xumes import Agent
+from xumes import Agent, GodotAction
 
 
 class CatchFruits(Agent):
@@ -18,7 +18,7 @@ class CatchFruits(Agent):
                     ),
                 }
             ),
-            action_space=spaces.Discrete(3),  # 0: move_left, 1: move_right, 2: jump
+            action_space=spaces.Discrete(3),
             max_episode_length=1000,
             total_timesteps=int(3_000_000),
             algorithm_type="MultiInputPolicy",
@@ -59,3 +59,6 @@ class CatchFruits(Agent):
             actions.append({"type": "ACTION_EVENT", "action_name": "move_right"})
 
         return actions
+
+    def reset(self):
+        return GodotAction("reset")
