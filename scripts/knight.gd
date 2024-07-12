@@ -20,7 +20,8 @@ func _on_game_started():
 	set_process_input(true)
 
 func _on_knight_fall():
-	set_process_input(false)
+	#set_process_input(false)
+	position = Vector2(118, 56)
 
 func _physics_process(delta):
 	# Add the gravity.

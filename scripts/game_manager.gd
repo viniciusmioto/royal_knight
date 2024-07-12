@@ -25,11 +25,11 @@ func _on_game_started():
 
 func _on_fruit_collected():
 	score += 1
-	print("score: ", score)
+	#print("score: ", score)
 
 
 func _on_knight_fall():
 	is_game_ended = true
 	deaths += 1
-	print("deaths: ", deaths)
+	#print("deaths: ", deaths)
 	
